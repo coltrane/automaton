@@ -52,7 +52,11 @@ but it will not forget any settings you've changed durring the current session.
 
 ## How to Run it Locally
 
+**Prerequisites**
+
 You will need [Node.js](http://nodejs.org/) installed and working.
+
+**Installing the Application**
 
 Clone the repository:
 
