@@ -28,7 +28,7 @@ var automaton = angular.module('automaton');
  * via a reset operation). 
  *
  */
-automaton.factory('AutomatonModel', function AutomatonModel(
+automaton.factory('AutomatonModel', function AutomatonModelFactory(
 		BrowserUtils) {
 
     /** public interface **/

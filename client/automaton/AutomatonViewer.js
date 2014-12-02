@@ -20,11 +20,11 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
         BrowserUtils) {
 
     /** The template used to create the component's internal elements */
-    var tpl = ' \
-      <div class="atmn-grid-scroll"></div> \
-      <table class="atmn-grid-content"> \
-        <tr automaton-viewer-row ng-repeat="row in automatonViewer.rows track by automatonViewer.getRowUid(row)"></tr> \
-      </table>';    
+    var tpl =
+      '<div class="atmn-grid-scroll"></div>' +
+      '<table class="atmn-grid-content">' +
+      '  <tr automaton-viewer-row ng-repeat="row in automatonViewer.rows track by automatonViewer.getRowUid(row)"></tr>' +
+      '</table>';    
 
     /** The initial scope returned by this directive */
     var scope = {
@@ -105,7 +105,7 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
 
         $scope.$watch($scope.automatonSize, function(val) {
             $controller.automatonSize(val);
-        })
+        });
 
         $scope.$watch('automatonViewer.automatonSize', function(val) {
             doLayout();
@@ -136,7 +136,7 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
                 colId : row.index()
             };
             $scope.$emit('automatonViewer.cellClicked', evt);
-        })
+        });
 
         scroll.on('scroll', function() {
             $scope.$apply(updateScroll());
@@ -170,11 +170,11 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
             var rootHeight = root.height();
             var rows = $controller.rows();
 
+            var neededTopIdx = Math.floor(requestedScrollPos / 
+                    (layoutMetrics.cellOuterSize + paddingMetrics.spaceY)) - 1;
+            var actualTopIdx = rows.length ? rows[0].id : 0;
 
-                var neededTopIdx = Math.floor(requestedScrollPos / 
-                        (layoutMetrics.cellOuterSize + paddingMetrics.spaceY)) - 1;
-                var actualTopIdx = rows.length ? rows[0].id : 0;
-
+            var tblTopPx;
 
             if (trackNewData && rows.length > layoutMetrics.rowsPerScreen) {
                 requestedScrollPos = newScrollHeight - rootHeight;
@@ -195,7 +195,7 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
                 }
 
                 // now, put the table where it should be within the scroll
-                var tblTopPx = actualTopIdx * 
+                tblTopPx = actualTopIdx * 
                         (layoutMetrics.cellOuterSize + paddingMetrics.spaceY) + 
                         (scroll.scrollTop() - requestedScrollPos);
             } 
@@ -326,7 +326,7 @@ automaton.controller('AutomatonViewerCtrl', function AutomatonViewerCtrl(
         val = (val) ? 0 : 1;
         AutomatonModel.setCell(info.rowId, info.colId, val);
         $scope.$apply();
-    })
+    });
 
 
     /**
@@ -535,8 +535,8 @@ automaton.directive('automatonViewerRow', function AutomatonViewerRowDirective()
     return {
         restrict: 'A',
         link: link
-    }
-})
+    };
+});
 // end: AutomatonViewerRowDirective
 
 

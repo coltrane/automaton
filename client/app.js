@@ -18,7 +18,7 @@ app.value('defaults', {
         for (var i = 0; i < size; ++i) {
             seed[i] = 0;
         }
-        if (size > 0) seed[Math.round(size / 2)] = 1;
+        if (size > 0) seed[Math.round(size / 2)-1] = 1;
         return seed;
     },
 
@@ -74,7 +74,7 @@ app.run(function(
         var mode = simState.mode;
         simState.mode = 
                 (mode === 'running') ? 'stopped' : 'running';
-    };
+    }
 
     /**
      * returns the automaton to original state
@@ -87,6 +87,8 @@ app.run(function(
      * saves the contents of $scope.settings into $scope.simState
      */
     function saveSettings() {
+        /* jshint eqnull:true */
+
         var settings = $scope.settings;
         if (settings.rule != null) simState.rule = settings.rule;
         if (settings.speed != null) simState.speed = settings.speed;
@@ -99,9 +101,9 @@ app.run(function(
     function _handleSettingsDialog(isVisible) {
         if (isVisible) {
             var settings = $scope.settings;
-            settings.rule = simState.rule,
-            settings.speed = simState.speed,
-            settings.size = simState.size        
+            settings.rule = simState.rule;
+            settings.speed = simState.speed;
+            settings.size = simState.size;
         }
     }
 

@@ -14,11 +14,9 @@ automaton.factory('BrowserUtils', function(
         $timeout) {
 
     var $ = angular.element;
-
-    var BrowserUtils;
     var _start = Date.now();
 
-    return BrowserUtils = {
+    var BrowserUtils = {
     
         /**
          * Sniffs cell padding and spacing from a given table in-context.
@@ -110,7 +108,7 @@ automaton.factory('BrowserUtils', function(
                 handlerList.push(handlerFn);
                 return function() {
                     off(evtName, handlerFn);
-                }
+                };
             }
 
             /**
@@ -159,6 +157,8 @@ automaton.factory('BrowserUtils', function(
             };
         }
     };
+
+    return BrowserUtils;
 });
 // end: BrowserUtils
 

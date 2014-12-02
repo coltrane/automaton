@@ -4,7 +4,7 @@
 var automaton = angular.module('automaton');
 
 
-automaton.factory('AutomatonDataSource', function AutomatonDataSource(
+automaton.factory('AutomatonDataSource', function AutomatonDataSourceFactory(
 		$timeout,
 		BrowserUtils) {
 
@@ -53,7 +53,7 @@ automaton.factory('AutomatonDataSource', function AutomatonDataSource(
 	    run(BrowserUtils.now());
 	    
 	    function run(tmThisFrame) {
-	    	if (tmThisFrame == null) tmThisFrame = BrowserUtils.now();
+	    	if (tmThisFrame === undefined) tmThisFrame = BrowserUtils.now();
 	        if (!shouldKeepRunning) return;
 	        
 	        // compute elapsed time since last frame
