@@ -1,22 +1,24 @@
-angular.module('automaton')
+(function(angular) {
+'use strict';
 
-.factory('AutomatonDataSource', function AutomatonDataSource(
+var automaton = angular.module('automaton');
+
+
+automaton.factory('AutomatonDataSource', function AutomatonDataSource(
 		$timeout,
 		BrowserUtils) {
 
-
-	/**
-	 * this is the public interface object, which will be
-	 * returned from this factory function.
-	 */
+	/** the public interface object **/
 	var AutomatonDataSource = {
 		start: start,
 		stop: stop,
 		speed: speed
 	};
-
-	// adds emitter/on/off functions
 	var emitter = BrowserUtils.makeEmitter(AutomatonDataSource);
+
+
+	/** stores the stop function while a simulation is running **/
+	var _stopFn = null;
 
 
 	/**
@@ -30,9 +32,6 @@ angular.module('automaton')
 		}
 		return _speed;
 	}
-
-	var _stopFn = null;
-
 
 	/**
 	 * begins running successive iterations of the given automaton
@@ -91,7 +90,6 @@ angular.module('automaton')
 	    return stop;
 	}
 
-
 	/**
 	 * stops the running automaton.
 	 */
@@ -99,8 +97,6 @@ angular.module('automaton')
 		if (!_stopFn) return;
 		_stopFn();
 	}
-
-
 
 	/**
 	 * compute a complete iteration of an automaton vector.
@@ -131,3 +127,4 @@ angular.module('automaton')
 
 	return AutomatonDataSource;
 });
+})(angular);

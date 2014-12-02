@@ -1,4 +1,5 @@
 (function(angular) {
+'use strict';
 
 var automaton = angular.module('automaton');
 
@@ -61,7 +62,7 @@ automaton.factory('BrowserUtils', function(
                     if (!selector) throw 'ruleset has no selectors at index '+i;
                     var ruleset = item;
                     css += ' {\n';
-                    for (j = 0; j < ruleset.length; ++j) {
+                    for (var j = 0; j < ruleset.length; ++j) {
                         css += ruleset[j] + ';\n';
                     }
                     css += '}\n';

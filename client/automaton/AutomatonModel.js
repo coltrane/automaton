@@ -1,4 +1,7 @@
-angular.module('automaton')
+(function(angular) {
+'use strict';
+
+var automaton = angular.module('automaton');
 
 /**
  * AutomatonModel
@@ -10,7 +13,7 @@ angular.module('automaton')
  * at the end of the list, and the list can not be re-ordered.  Once a row
  * is added, it can not be removed, but rows can be modified in place.  When
  * a row is added, it is assigned an id and a version number.  The id
- * reflects the rows permanent position (`0` based) in the sequence of rows.
+ * reflects the row's permanent position (`0` based) in the sequence of rows.
  * the version starts at `0`, and is incremented each time the row is
  * modified.  Though rows are added as simple vectors (arrays) of raw data,
  * they are stored, and returned, as objects with the following structure:
@@ -19,13 +22,38 @@ angular.module('automaton')
  *
  * The model supports addition of event listeners (via the `on()` method),
  * and will dispatch the `'changed'` event each time an element is changed,
- * or a batch of elements is added.
+ * or a batch of elements is added.  The `changed` event receives a list
+ * of row ids, indicating which rows have been modified.  The `ids` array
+ * may be `== null` to indicate that the entire dataset was modified (eg.
+ * via a reset operation). 
  *
  */
-.factory('AutomatonModel', function AutomatonModel(
+automaton.factory('AutomatonModel', function AutomatonModel(
 		BrowserUtils) {
 
-	var data;
+    /** public interface **/
+    var AutomatonModel = {
+        reset: reset,
+        appendRow: appendRow,
+        appendRows: appendRows,
+        setRow: setRow,
+        getRow: getRow,
+        getRange: getRange,
+        setCell: setCell,
+        getCell: getCell,
+        getRowCount: getRowCount,
+    };
+    var emitter = BrowserUtils.makeEmitter(AutomatonModel);
+
+    /** array of all collected row vectors that have been added **/
+    var data;
+
+
+
+    // call reset to setup initial state
+    reset();
+
+
 
 	/**
 	 * Clears the stored data, and resets to initial state.
@@ -129,21 +157,7 @@ angular.module('automaton')
         emitter.emit('changed', ids);
     }
 
-
-    /** public interface **/
-	var AutomatonModel = {
-		reset: reset,
-		appendRow: appendRow,
-		appendRows: appendRows,
-		setRow: setRow,
-		getRow: getRow,
-		getRange: getRange,
-		setCell: setCell,
-		getCell: getCell,
-		getRowCount: getRowCount,
-	};
-	var emitter = BrowserUtils.makeEmitter(AutomatonModel);
-
-	reset();
 	return AutomatonModel;
 });
+
+})(angular);

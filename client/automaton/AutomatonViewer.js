@@ -1,4 +1,5 @@
 (function(angular) {
+'use strict';
 
 var automaton = angular.module('automaton', []);
 
@@ -194,7 +195,7 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
                 }
 
                 // now, put the table where it should be within the scroll
-                tblTopPx = actualTopIdx * 
+                var tblTopPx = actualTopIdx * 
                         (layoutMetrics.cellOuterSize + paddingMetrics.spaceY) + 
                         (scroll.scrollTop() - requestedScrollPos);
             } 

@@ -1,5 +1,5 @@
-'use strict';
 (function(angular) {
+'use strict';
 
 // Declare app level module which depends on views, and components
 var app = angular.module('app', [
@@ -11,9 +11,16 @@ var app = angular.module('app', [
  */
 app.value('defaults', {
 
-    // default size, and seed data for the automaton
-    seed: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    // default size, and seed function for the automaton
     size: 31,
+    seed: function(size) {
+        var seed = [];
+        for (var i = 0; i < size; ++i) {
+            seed[i] = 0;
+        }
+        if (size > 0) seed[Math.round(size / 2)] = 1;
+        return seed;
+    },
 
     // initial automaton rule to be used.
     rule: 30,
@@ -116,8 +123,7 @@ app.run(function(
             AutomatonDataSource.stop();
             AutomatonModel.reset();
 
-            var seedRow = defaults.seed.slice(0, simState.size);
-            while(seedRow.length < simState.size) seedRow.push(0); 
+            var seedRow = defaults.seed(simState.size);
 
             // if this is not called in a separate digest, then
             // AutomatonViewer will fail to pick up the changes as it should.
