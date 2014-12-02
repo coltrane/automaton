@@ -1,14 +1,26 @@
 
-# AngularJS Automaton Simulator Application
+# AngularJS Automaton Simulator 
 
 This project demonstrates the use of AnuglarJS, to build a simple, 
-but non-trivial, simulator for one-dimensional celular automata.
+but non-trivial, simulator for one-dimensional celular automata.  
+
+At the core of this application is an angular directive that provides a UI component for browsing through the results
+of many successive iterations of a cellular automata.
+In order to support very large data sets that may result from running the simulation at length, this component renders 
+only those elements that are visible on the screen at any given time; other elements that are off the screen are kept
+in memory, but have no representation in the HTML DOM.  This keeps the total number of nodes down to a size that 
+most browsers can handle well.
+
 
 [A live demo is available here](http://automaton.dev.projectmastermind.com/).
 
+**Browser Support:**  This application supports the latest version of all major browsers (Chrome, Safari, FireFox, Internet Explorer).  That said, Internet Explorer does have some difficulty with the amount of DOM manipulation this component
+does while scrolling -- it is usable in IE, but the experience is better in other browsers.  FireFox is recommended.
+
+
 ## Usage and Features
 
-By default, the app is configured to generate the "Rule 30" cellular automata, as described [here](http://mathworld.wolfram.com/Rule30.html).  To start it, just click the "Start" button,
+By default, the app is configured to generate the "Rule 30" cellular automata, as described [here](http://mathworld.wolfram.com/Rule30.html).  To start the simulation, just click the blue "Start" button,
 and click it again when you're ready to stop.  When you stop the generator, you'll be able
 to browse back through the results by scrolling.  If you'd like to simulate a different
 "Rule #", or change the vector size, or initial state seeding, those features are described below.
@@ -31,7 +43,7 @@ with a clean slate.  The following items can be controlled:
 - Automaton Size:  this is the size of the automaton vector (the number of cells wide).
 - Simulation Speed:  this is the speed at which the system will compute successive iterations of the automaton.  It's given in iterations/second.
 
-** Clear and Start Over **
+**Clear and Start Over**
 
 The Reset button will erase all the stored history, and clear the display back to its original state,
 but it will not forget any settings you've changed durring the current session.
