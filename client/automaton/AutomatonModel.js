@@ -44,7 +44,6 @@ angular.module('automaton')
     	var newIdx = data.length;
         var row = _makeRow(newIdx, rowData);
         data.push(row);
-        console.log("AutomatonModel.appendRow", row);
         _changed([newIdx]);
     }
 
@@ -54,7 +53,6 @@ angular.module('automaton')
     	for(var i = 0; i < batch.length; ++i) {
     		var row = _makeRow(nextIdx, batch[i]);
     		data.push(row);
-    		console.log("AutomatonModel.appendRows", row);
     		changedIds.push(nextIdx);
     		nextIdx += 1;
     	}
@@ -102,13 +100,11 @@ angular.module('automaton')
         // recognize the change.
         data[rowIdx] = { id: row.id, version: row.version, data: row.data };
 
-        console.log("setRow: newVal: ", row);
         _changed([rowIdx]);
     }
     
     /** Gets the data in the indicated cell of the indicated row **/
     function getCell(rowIdx, cellIdx) {
-    	console.log("getCell: data=", rowIdx, cellIdx, data);
         var row = data[rowIdx];       
         if (!row) return undefined;
         return row.data[cellIdx];

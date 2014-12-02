@@ -33,6 +33,11 @@ angular.module('automaton')
 
 	var _stopFn = null;
 
+
+	/**
+	 * begins running successive iterations of the given automaton
+	 * until _stopFn is called
+	 */
 	function start(initialStates, rule) {
 	    
 	    if (_stopFn) {
@@ -60,21 +65,12 @@ angular.module('automaton')
 	        var ctRowsStart = ctRows;
 	        var rows = [];
 	        while (1000 * (ctRows/tmElapsed) < _speed) {
-	            //console.log(states);
 	            states = iterate(states, rule);
 	            rows.push(states);
 	            ctRows += 1;
 	        }
 	        
 	        if (rows.length) emitter.emit('data', rows);
-
-	        // dump some metrics
-	        /*
-	        console.log("rendered " + (ctRows - ctRowsStart) 
-	                    + " rows in frame " + ctFrame + "."
-	                    + " Frame Rate: " + frameRate 
-	                    + " (avg: " + avgFrameRate + ")");
-	        */
 	        
 	        // increment frame counter and schedule next frame rendering
 	        ctFrame += 1;
@@ -95,12 +91,20 @@ angular.module('automaton')
 	    return stop;
 	}
 
+
+	/**
+	 * stops the running automaton.
+	 */
 	function stop() {
 		if (!_stopFn) return;
 		_stopFn();
 	}
 
 
+
+	/**
+	 * compute a complete iteration of an automaton vector.
+	 */
     function iterate(states, rule) {
         var nextStates = [];
         var size = states.length;
@@ -114,6 +118,10 @@ angular.module('automaton')
         return nextStates;
     }
 
+    /**
+     * given all the info for a single cell, compute the
+     * next state for that cell
+     */
 	function nextState(rule, left, self, right) {
 	    var state = left << 2;
 	    state |= self << 1;

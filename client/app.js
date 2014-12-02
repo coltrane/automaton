@@ -27,8 +27,10 @@ app.value('defaults', {
 /**
  * The main entry point for the app.
  */
-app.run(function($rootScope, $timeout, AutomatonModel, AutomatonDataSource,
-        asyncDigest, defaults) {
+app.run(function(
+        $rootScope, $timeout, 
+        AutomatonModel, AutomatonDataSource,
+        defaults) {
 
     var $scope = $rootScope;
 
@@ -53,30 +55,39 @@ app.run(function($rootScope, $timeout, AutomatonModel, AutomatonDataSource,
 
     $scope.$watch('settings.visible', _handleSettingsDialog);
 
+
     // setup the data source
     AutomatonDataSource.on('data', _handleNewAutomatonData);
 
 
+    /**
+     * starts and stops the automaton
+     */
     function toggleRunMode() {
         var mode = simState.mode;
         simState.mode = 
                 (mode === 'running') ? 'stopped' : 'running';
     };
 
+    /**
+     * returns the automaton to original state
+     */
     function reset() {
         simState.mode = 'reset';
     }
 
+    /**
+     * saves the contents of $scope.settings into $scope.simState
+     */
     function saveSettings() {
         var settings = $scope.settings;
-        console.log("saveSettings", settings);
         if (settings.rule != null) simState.rule = settings.rule;
         if (settings.speed != null) simState.speed = settings.speed;
         if (settings.size != null) simState.size = settings.size;
 
         reset();
-        console.log("simState: ", simState);
     }
+
 
     function _handleSettingsDialog(isVisible) {
         if (isVisible) {
@@ -84,7 +95,6 @@ app.run(function($rootScope, $timeout, AutomatonModel, AutomatonDataSource,
             settings.rule = simState.rule,
             settings.speed = simState.speed,
             settings.size = simState.size        
-            console.log("settingsVisible...", settings);
         }
     }
 
@@ -109,22 +119,18 @@ app.run(function($rootScope, $timeout, AutomatonModel, AutomatonDataSource,
 
             var seedRow = defaults.seed.slice(0, simState.size);
             while(seedRow.length < simState.size) seedRow.push(0);     
-            console.log("size: ", simState.size, "seedRow.length", seedRow.length)      
             AutomatonModel.appendRow(seedRow);
 
             simState.mode = 'stopped';
-            console.log('reset done');
         }
     }
 
     function _handleRuleChanged(val) {
-        console.log('rule changed', val);
         if (val < 0) simState.rule = val = 0;
         if (val > 255) simState.rule = val = 255; 
     }
 
     function _handleSpeedChanged(val) {
-        console.log('speed changed', val);
         if (val < 0) simState.speed = 0;
         if (val > 1000) simState.speed = 1000;
 
@@ -133,30 +139,8 @@ app.run(function($rootScope, $timeout, AutomatonModel, AutomatonDataSource,
 
     function _handleNewAutomatonData(data) {
         AutomatonModel.appendRows(data);
-        asyncDigest($scope);
     }
-
-
 });
 
-
-app.factory('asyncDigest', function($rootScope, $timeout) {
-
-    
-    function asyncDigest(scope) {
-        if (!scope) scope = $rootScope;
-        if (scope.$$phase) return;
-        if (scope._pendingAsyncDigest) return;
-
-        scope._pendingAsyncDigest = requestAnimationFrame(function() {
-            console.log("digest");
-            scope.$apply();
-            scope._pendingAsyncDigest = false;
-        });
-    }
-
-    return asyncDigest;
-});
 
 })(angular);
-

@@ -23,10 +23,7 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
       <div class="atmn-grid-scroll"></div> \
       <table class="atmn-grid-content"> \
         <tr automaton-viewer-row ng-repeat="row in automatonViewer.rows track by automatonViewer.getRowUid(row)"></tr> \
-      </table>';
-
-    var rowTpl = '<tr></tr>';
-    
+      </table>';    
 
     /** The initial scope returned by this directive */
     var scope = {
@@ -49,8 +46,6 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
     function link ($scope, $element, $attrs, $controller) {
         // called once each time an element with this 
         // directive is placed into the DOM
-
-        console.log("AutomatonViewerDirective.link")
 
         instanceCount += 1;
 
@@ -104,28 +99,23 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
 
         // scope setup
         $scope.$watch($scope.captureScroll, function(val) {
-            console.log('captureScroll', val);
             $controller.trackNewData(val);
         });
 
         $scope.$watch($scope.automatonSize, function(val) {
-            console.log('automatonSize', val);
             $controller.automatonSize(val);
         })
 
         $scope.$watch('automatonViewer.automatonSize', function(val) {
-            console.log("automatonSize: ", val);
             doLayout();
             updateScroll();
         });
 
         $scope.$watch('automatonViewer.trackNewData', function(val) {
-            //console.log("trackNewData: ", val);
             updateScroll();
         });
 
         $scope.$watch('automatonViewer.availableRowCount', function(val) {
-            // console.log("ViewerDirective: availableRowCount: ", val);
             updateScroll();
         });
 
@@ -144,7 +134,6 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
                 rowId : row.scope().row.id,
                 colId : row.index()
             };
-            console.log(evt);
             $scope.$emit('automatonViewer.cellClicked', evt);
         })
 
@@ -165,7 +154,6 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
             var requestedScrollPos = scroll.scrollTop();
             var availableRowCount = $controller.availableRowCount();
 
-            console.log("updateScroll", requestedScrollPos, availableRowCount);
 
             // adjust the scroll height if necessary
             var newScrollHeight = availableRowCount *
@@ -175,19 +163,16 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
                 scrollSpacer.css('height', newScrollHeight + 'px');
             }
 
-            console.log('newScrollHeight: ', newScrollHeight);
 
             // fix up the scroll position if trackNewData is enabled
             var trackNewData = $controller.trackNewData();
             var rootHeight = root.height();
             var rows = $controller.rows();
 
-            console.log("rowsPerScreen: ", layoutMetrics.rowsPerScreen, rows.length, trackNewData);
 
                 var neededTopIdx = Math.floor(requestedScrollPos / 
                         (layoutMetrics.cellOuterSize + paddingMetrics.spaceY)) - 1;
                 var actualTopIdx = rows.length ? rows[0].id : 0;
-                    console.log("needed: ", neededTopIdx, "actual: ", actualTopIdx);
 
 
             if (trackNewData && rows.length > layoutMetrics.rowsPerScreen) {
@@ -214,17 +199,10 @@ automaton.directive('automatonViewer', function AutomatonViewerDirective(
                         (scroll.scrollTop() - requestedScrollPos);
             } 
 
-            console.log("  actualTopIdx: ", actualTopIdx,
-                     "tblTopPx: ", tblTopPx);
-            console.log("tblTopPx", tblTopPx, 
-                    requestedScrollPos, scroll.scrollTop());
-
             if (tbl.css('top') !== tblTopPx) {
-                //console.log("changed table position: ", tblTopPx);
                 tbl.css('top', tblTopPx + 'px');
             }
 
-console.log("  time: ", (BrowserUtils.now()-_tmStart).toFixed(2));
             return;
         }
 
@@ -236,10 +214,8 @@ console.log("  time: ", (BrowserUtils.now()-_tmStart).toFixed(2));
          * `maxRowCount`, and `maxTblHeight`.
          */
         function doLayout() {
-console.log("doLayout");
-            var cellCountX = $controller.automatonSize();
-            // if (cellCountX === 0) return;
 
+            var cellCountX = $controller.automatonSize();
             var padding = paddingMetrics;
 
             var rootWidth = root.width();
@@ -297,25 +273,11 @@ console.log("doLayout");
                 ]
             ]);
             $(root.get(0).ownerDocument.head).append(stylesheet);
-            
-            
-
-            // dump metrics
-            console.log("Layout Metrics:", {
-                "root.width (actual)": root.width(),
-                "root.width (expected)": rootWidth,
-                "padding": padding,
-                "layout": result,
-                "cellInnerSize": cellInnerSize
-            });
 
             $controller.windowSize(result.maxRowCount);
 
             layoutMetrics = result;
         }
-
-
-        // console.log('AutomatonViewer: ', $element[0]);
     }
 
     /**
@@ -328,7 +290,7 @@ console.log("doLayout");
         controller: 'AutomatonViewerCtrl',
         link: link,
     };
-})
+});
 // end: AutomatonViewerDirective
 
 
@@ -339,7 +301,7 @@ console.log("doLayout");
  * manages runtime-configurable aspects of the AutomatonViewer. 
  * This controller is attached by the AutomatonViewerDirective.
  */
-.controller('AutomatonViewerCtrl', function AutomatonViewerCtrl(
+automaton.controller('AutomatonViewerCtrl', function AutomatonViewerCtrl(
       $scope,
       AutomatonModel) {
 
@@ -370,9 +332,9 @@ console.log("doLayout");
         var _windowPosition = windowPosition();
         var _trackNewData = trackNewData();
 
-        if(hasNewRows && _trackNewData) {
+        if (hasNewRows && _trackNewData) {
 
-            if(_availableRowCount > _windowPosition) {
+            if (_availableRowCount > _windowPosition) {
                 // setting the window position will produce a fetch
                 windowPosition(_availableRowCount);
             } else {
@@ -402,7 +364,6 @@ console.log("doLayout");
         }
 
         // check to see if any ids we care about have changed
-        console.log('ids: ', ids);
         _fetchData();
         if ($scope.$$phase) $scope.$apply();
         return;
@@ -417,9 +378,7 @@ console.log("doLayout");
     });
 
     $scope.$on('automatonViewer.cellClicked', function(evt, info) {
-        console.log("info: ", info);
         var val = AutomatonModel.getCell(info.rowId, info.colId);
-        console.log('val:', val, info);
         val = (val) ? 0 : 1;
         AutomatonModel.setCell(info.rowId, info.colId, val);
         $scope.$apply();
@@ -438,9 +397,8 @@ console.log("doLayout");
         return _viewModel[name];
     }
 
-
     /** 
-     * The number of rows requested by the viewer.  This controller will
+     * get/set number of rows requested by the viewer.  This controller will
      * populate the data set with no more than this number of rows.  This 
      * is called by the directive as the size of the container changes.
      */
@@ -448,7 +406,6 @@ console.log("doLayout");
     function windowSize(val) {
         if (val !== undefined && _windowSize !== val) {
             _windowSize = val;
-            console.log("AutomatonViewerCtrl: set windowSize: ", _windowSize);
             _fetchData();
         }
         return _windowSize;
@@ -456,8 +413,8 @@ console.log("doLayout");
     this.windowSize = windowSize;
 
     /**
-     * The index of the last row that should be placed in the data set.
-     * The full extents of the dataset are given by:
+     * get/set the index of the last row that should be placed in the 
+     * data set. The full extents of the dataset are given by:
      * 
      *     [windowPosition - windowSize + 1, windowPosition]
      *
@@ -469,7 +426,6 @@ console.log("doLayout");
     function windowPosition(val) {
         if (val !== undefined && _windowPosition !== val) {
             _windowPosition = val;
-            console.log("AutomatonViewerCtrl: set windowPosition: ", _windowPosition);
             _fetchData();
         }
         return _windowPosition;
@@ -487,7 +443,6 @@ console.log("doLayout");
             viewModel('trackNewData', !!val);
         }
         val = viewModel('trackNewData');
-        console.log("ctrl.trackNewData:", val);
         return val;
     }
     this.trackNewData = trackNewData;
@@ -542,8 +497,6 @@ console.log("doLayout");
     }
 
 
-
-
     /**
      * Returns a list of row objects from `rows` where each has `id` matching
      * one of the provided `rowIds`.  `rowIds` is an array of numeric
@@ -577,10 +530,10 @@ console.log("doLayout");
 
     /**
      * fetches a window-full of data based on the current state of the
-     * control, and the model.
+     * control, and the model.  The data is populated into the `rows`
+     * element of the viewmodel.
      */
     function _fetchData() {
-        // console.log("fetchData", lastRowId);
         var _rows = rows();
         var _windowSize = windowSize();
         var _windowPosition = windowPosition();
@@ -602,13 +555,9 @@ console.log("doLayout");
 
         // store the fetched rows in the viewModel.
         rows(fetchedRows);
-
-
-        console.log("_fetchData: ", fetchedRows,
-                "automatonSize", _size);
     }
 
-})
+});
 // end: AutomatonViewerCtrl
 
 
@@ -618,12 +567,7 @@ console.log("doLayout");
  * 
  * Represents a single row within the automaton grid viewer.
  */
-.directive('automatonViewerRow', function AutomatonViewerRowDirective() {
-
-    function AutomatonViewerRowCtrl($scope) {
-        // instantiated before link is called
-        //console.log("AutomationViewerRow.ctrl", $scope.row);
-    }
+automaton.directive('automatonViewerRow', function AutomatonViewerRowDirective() {
 
     function link($scope, $element, $attrs) {
         
@@ -651,159 +595,10 @@ console.log("doLayout");
 
     return {
         restrict: 'A',
-        controller: AutomatonViewerRowCtrl,
         link: link
     }
 })
 // end: AutomatonViewerRowDirective
 
-/**
- * BrowserUtils
- *
- * A singleton class comprising various utilities related to the browser
- * environment.  
- */
-.factory('BrowserUtils', function($window) {
-    var $ = angular.element;
-
-    var BrowserUtils;
-    var _start = Date.now();
-
-    return BrowserUtils = {
-    
-        /**
-         * Sniffs cell padding and spacing from a given table in-context.
-         * This function allows us to rely on plain css for styling the
-         * table and cells in the automaton grid view.
-         */
-        getTablePaddingMetrics: function getTablePaddingMetrics(aTbl) {
-            var tbl = aTbl.clone();
-            var padding = {};
-            var tmpCell = angular.element('<td/>').css({
-                width: "10px", height: "10px"
-            }).wrap('<tr/>');
-        
-            // temporarily substitute our sniffer table for the original
-            tbl.empty().append(tmpCell.parent());
-            aTbl.before(tbl).detach();
-            
-            // measure cell spacing
-            padding.spaceX = (tbl.width() - tmpCell.outerWidth())/2;
-            padding.spaceY = (tbl.height() - tmpCell.outerHeight())/2;
-
-            // measure aggregate cell padding
-            padding.cellX = tmpCell.outerWidth()-10;
-            padding.cellY = tmpCell.outerWidth()-10;
-            
-            // now put back the original table, and destroy our tmp table
-            tbl.before(aTbl).remove();
-            return padding;
-        },
-        
-        /**
-         * Creates a stylesheet element that is ready to be added to the
-         * document.
-         */
-        createStyleSheet: function createStyleSheet(rules) {
-            var css = '';
-            var selector = '';
-            for (var i = 0; i < rules.length; ++i) {
-                var item = rules[i];
-                if (Array.isArray(item)) {
-                    if (!selector) throw 'ruleset has no selectors at index '+i;
-                    var ruleset = item;
-                    css += ' {\n';
-                    for (j = 0; j < ruleset.length; ++j) {
-                        css += ruleset[j] + ';\n';
-                    }
-                    css += '}\n';
-                } else {
-                    if (selector) selector += ', ';
-                    selector += rules[i];
-                    css += selector;
-                }
-            }
-            var style = $('<style type="text/css">'+css+'</style>');
-            return style;
-        },
-
-        
-        now: function() {
-            if ($window.performance) {
-                return $window.performance.now();
-            }
-            return Date.now() - _start;
-        },
-
-        debounce: function(fn) {
-            var tmr = 0;
-            return function() {
-                if (tmr) clearTimeout(tmr);
-                tmr = setTimeout(fn, 200);
-            };
-        },
-
-        makeEmitter: function makeEmitter(self) {
-            /** 
-             * internal list of event handlers used by `on()`, `off()`, and `emit()` 
-             **/
-            var _handlers = {};
-
-            /** 
-             * add a listener for the indicated event. returns a function that,
-             * when called, will remove the listener.
-             */
-            function on(evtName, handlerFn) {
-                var handlerList = _handlers[evtName];
-                if (!handlerList) {
-                    handlerList = _handlers[evtName] = [];
-                }
-                handlerList.push(handlerFn);
-                return function() {
-                    off(evtName, handlerFn);
-                }
-            }
-
-            /**
-             * remove the indicated listener
-             */
-            function off(evtName, handlerFn) {
-                var handlerList = _handlers[evtName];
-                if (!handlerList) return;
-                var i = handlerList.length;
-                while (i--) {
-                    if (handlerList[i] === handlerFn) {
-                        handlerList.splice(i, 1);
-                    }
-                }
-            }
-
-            /**
-             * emit the event, `evtName`.  additional arguments are passed
-             * along to the event handlers.
-             */
-            function emit(evtName) {
-                var handlerList = _handlers[evtName];
-                console.log("emit", arguments, handlerList);
-                if (!handlerList) return;
-                var args = Array.prototype.slice.call(arguments, 1);
-                var i = handlerList.length;
-                while (i--) {
-                    handlerList[i].apply(self, args);
-                }
-            }
-
-            if (! self.on) self.on = on;
-            if (! self.off) self.off = off;
-
-            return {
-                on: on,
-                off: off,
-                emit: emit
-            };
-        }
-    };
-});
-// end: BrowserUtils
 
 })(angular);
