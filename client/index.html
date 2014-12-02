@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>My AngularJS App</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet"
+    href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"
+  >
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <nav id="main-toolbar" class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="atmn-state-controls navbar-left">
+        <button type="button" class="btn btn-primary navbar-btn"
+            ng-click="simState.toggleRunMode()" ng-switch="simState.mode">
+          <span ng-switch-when="running">Stop</span>
+          <span ng-switch-default>Start</span>
+        </button>
+        <button type="button" class="btn btn-default navbar-btn" 
+            ng-click="simState.reset()">
+          Reset
+        </button>
+        <button type="button" class="btn btn-default navbar-btn" 
+            ng-click="settings.visible=true" >
+          Settings
+        </button>      
+      </div>
+
+      <div id="rule-num-display" class="navbar-right">
+        Rule: {{simState.rule}}
+      </div>
+    </div>
+  </nav>
+
+  <automaton-viewer id="viewer" 
+      capture-scroll="simState.mode==='running'">
+  </automaton-viewer>
+
+  <div id="app-loading" ng-if="simState.mode == null"></div>
+
+  <div id="app-settings" ng-class="{visible: settings.visible}">
+    <div>
+      <h3>Settings</h3>
+      <form>
+        <div class="form-group">
+          <label for="txtRuleNum">Automaton Rule Number</label>
+          <input type="text" class="form-control" id="txtRuleNum"
+              ng-model="settings.rule" />
+        </div>
+        <div class="form-group">
+          <label for="txtSize">Automaton Size</label>
+          <input type="text" class="form-control" id="txtSize"
+              ng-model="settings.size" />
+        </div>
+        <div class="form-group">
+          <label for="txtSpeed">Simulation Speed (iterations/second)</label>
+          <input type="text" class="form-control" id="txtSpeed"
+              ng-model="settings.speed" />
+        </div>
+        <button type="submit" class="btn btn-primary"
+            ng-click="settings.save(); settings.visible=false;">
+          Save &amp; Reset
+        </button>
+        <button type="submit" class="btn btn-default"
+            ng-click="settings.visible=false">
+          Cancel
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/angular/angular.js"></script>  
+  <script 
+    src="bower_components/bootstrap/dist/js/bootstrap.min.js"
+  ></script>
+  <script src="app.js"></script>
+  <script src="automaton/AutomatonViewer.js"></script>
+  <script src="automaton/AutomatonModel.js"></script>
+  <script src="automaton/AutomatonDataSource.js"></script>
+  
+  <script src="components/version/version.js"></script>
+  <script src="components/version/version-directive.js"></script>
+  <script src="components/version/interpolate-filter.js"></script>
+</body>
+</html>
