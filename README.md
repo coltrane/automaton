@@ -114,7 +114,9 @@ like this:
 
 Now just point your browser to [http://localhost:8000/](http://localhost:8000/)
 
-## Implementation The implementation consists of the following components, which
+## Implementation 
+
+The implementation consists of the following components, which
 are discussed briefly below. Futher information is available as commentary
 within the code.
 
