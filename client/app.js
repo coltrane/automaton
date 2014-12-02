@@ -113,13 +113,19 @@ app.run(function(
 
         } else {
             // reset
-            
             AutomatonDataSource.stop();
-            AutomatonModel.reset()
+            AutomatonModel.reset();
 
             var seedRow = defaults.seed.slice(0, simState.size);
-            while(seedRow.length < simState.size) seedRow.push(0);     
-            AutomatonModel.appendRow(seedRow);
+            while(seedRow.length < simState.size) seedRow.push(0); 
+
+            // if this is not called in a separate digest, then
+            // AutomatonViewer will fail to pick up the changes as it should.
+            // the $timeout forces a separate digest.    
+            $timeout(function() {
+                AutomatonModel.appendRow(seedRow);
+            });
+
 
             simState.mode = 'stopped';
         }

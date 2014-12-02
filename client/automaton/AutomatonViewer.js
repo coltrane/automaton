@@ -318,64 +318,7 @@ automaton.controller('AutomatonViewerCtrl', function AutomatonViewerCtrl(
 
 
     // listen to the model, and respond when it changes
-    AutomatonModel.on('changed', function(ids) {
-        // `ids` is a list of ids that have changed.
-
-        // first update the availableRowCount
-        var hasNewRows = false;
-        var _availableRowCount = availableRowCount();
-        availableRowCount(AutomatonModel.getRowCount());
-        if (availableRowCount() !== _availableRowCount) hasNewRows = true;
-        _availableRowCount = availableRowCount();
-
-
-        var _windowPosition = windowPosition();
-        var _trackNewData = trackNewData();
-
-        if (hasNewRows && _trackNewData) {
-
-            if (_availableRowCount > _windowPosition) {
-                // setting the window position will produce a fetch
-                windowPosition(_availableRowCount);
-            } else {
-                _fetchData();
-            }
-
-            // NOTE: (JLC) the following check is necessary in order
-            // to avoid having to $apply from inside the Model. Doing
-            // so would force a digest on every model change, regardless
-            // of whether or not it is needed.  This is a performance
-            // optimization, not a best practice.
-            if ($scope.$$phase) $scope.$apply();
-            return;
-        }
-
-        if(hasNewRows && _availableRowCount < _windowPosition) {
-            _fetchData();
-            if ($scope.$$phase) $scope.$apply();
-            return;            
-        }
-
-        if (! ids) {
-            // the whole dataset has changed, so just refresh everything.
-            _fetchData();
-            if ($scope.$$phase) $scope.$apply();
-            return;
-        }
-
-        // check to see if any ids we care about have changed
-        _fetchData();
-        if ($scope.$$phase) $scope.$apply();
-        return;
-
-        var _rows = rows();
-        var changedRows = _findRowsById(ids, _rows);
-        if (changedRows.length) {
-            _fetchData()
-            if ($scope.$$phase) $scope.$apply();
-            return;
-        }
-    });
+    AutomatonModel.on('changed', _handleModelChanged);
 
     $scope.$on('automatonViewer.cellClicked', function(evt, info) {
         var val = AutomatonModel.getCell(info.rowId, info.colId);
@@ -497,35 +440,30 @@ automaton.controller('AutomatonViewerCtrl', function AutomatonViewerCtrl(
     }
 
 
-    /**
-     * Returns a list of row objects from `rows` where each has `id` matching
-     * one of the provided `rowIds`.  `rowIds` is an array of numeric
-     * row id values.
-     */
-    function _findRowsById(ids, rows) {
+    function _handleModelChanged(ids) {
 
-        var result = [];
+        // `ids` is a list of ids that have changed.
 
-        // the values in `ids` will always be numeric, so sorting
-        // them makes sense.  We also know that `rows` will already
-        // be sorted by id.
-        ids = ids.sort();
+        // first update the availableRowCount
+        var hasNewRows = false;
+        var _availableRowCount = availableRowCount();
+        availableRowCount(AutomatonModel.getRowCount());
+        if (availableRowCount() !== _availableRowCount) hasNewRows = true;
+        _availableRowCount = availableRowCount();
 
-        // short circuit for simple cases
-        if (rows.length === 0 || ids.length === 0) return result;
-        if (ids[ids.length-1] < rows[0]) return result;
-        if (ids[0] > rows[rows.length-1]) return result;
 
-        // all other cases compare item-by-item.
-        for (var i = 0, j = 0; i < ids.length; ++i) {
-            var chgId = ids[i];
-            while (chgId > rows[j].id) {
-                ++j;
-                if (j >= rows.length) return result;
+        var _windowPosition = windowPosition();
+        var _trackNewData = trackNewData();
+
+        if (hasNewRows && _trackNewData) {
+
+            if (_availableRowCount > _windowPosition) {
+                // setting the window position will produce a fetch
+                windowPosition(_availableRowCount);
+                return;
             }
         }
-
-        return result;
+        _fetchData();
     }
 
     /**
@@ -540,8 +478,8 @@ automaton.controller('AutomatonViewerCtrl', function AutomatonViewerCtrl(
         var availableRowCount = AutomatonModel.getRowCount();
 
         // figure out the range we need to fetch, and fetch it.
-        var start = Math.max(0, _windowPosition - _windowSize);
-        var end = _windowPosition;
+        var end = Math.min(_windowPosition, availableRowCount);
+        var start = Math.max(0, end - _windowSize);
         var fetchedRows = AutomatonModel.getRange(start, end);
 
         // adjust the automaton size if it looks like that has changed
@@ -549,7 +487,7 @@ automaton.controller('AutomatonViewerCtrl', function AutomatonViewerCtrl(
         if (fetchedRows.length) {
             _size = fetchedRows[0].data.length;
         }
-        if (_size > automatonSize()) {
+        if (_size > automatonSize() || _size === 0) {
             automatonSize(_size);
         }
 

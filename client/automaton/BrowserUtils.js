@@ -8,7 +8,10 @@ var automaton = angular.module('automaton');
  * A singleton class comprising various utilities related to the browser
  * environment.  
  */
-automaton.factory('BrowserUtils', function($window) {
+automaton.factory('BrowserUtils', function(
+        $window,
+        $timeout) {
+
     var $ = angular.element;
 
     var BrowserUtils;
@@ -137,13 +140,21 @@ automaton.factory('BrowserUtils', function($window) {
                 }
             }
 
+            function emitAsync(evtName) {
+                var args = Array.prototype.slice.call(arguments);
+                $timeout(function() {                    
+                    emit.apply(null, args);
+                });
+            }
+
             if (! self.on) self.on = on;
             if (! self.off) self.off = off;
 
             return {
                 on: on,
                 off: off,
-                emit: emit
+                emit: emit,
+                emitAsync: emitAsync
             };
         }
     };

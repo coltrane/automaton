@@ -126,7 +126,7 @@ angular.module('automaton')
 
     /** emits the `'changed'` event **/
     function _changed(ids) {
-    	emitter.emit('changed', ids);
+        emitter.emit('changed', ids);
     }
 
 
