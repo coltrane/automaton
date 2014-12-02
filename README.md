@@ -47,8 +47,8 @@ By default, the app is configured to generate the "Rule 30" cellular automata,
 as described [here](http://mathworld.wolfram.com/Rule30.html).  To start the
 simulation, just click the blue "Start" button, and click it again when you're
 ready to stop.  When you stop the generator, you'll be able to browse back
-through the results by scrolling.  If you'd like to simulate a different "Rule
-#", or change the vector size, or initial state seeding, those features are
+through the results by scrolling.  If you'd like to simulate a different "Rule #",
+or change the vector size, or initial state seeding, those features are
 described below.
 
 **Setup the initial state**
