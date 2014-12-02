@@ -17,6 +17,9 @@
   <nav id="main-toolbar" class="navbar navbar-default">
     <div class="container-fluid">
       <div class="atmn-state-controls navbar-left">
+        <div id="main-title" class="">
+          Elementary Automaton - Rule: {{simState.rule}}
+        </div>
         <button type="button" class="btn btn-primary navbar-btn"
             ng-click="simState.toggleRunMode()" ng-switch="simState.mode">
           <span ng-switch-when="running">Stop</span>
@@ -32,9 +35,6 @@
         </button>      
       </div>
 
-      <div id="rule-num-display" class="navbar-right">
-        Rule: {{simState.rule}}
-      </div>
     </div>
   </nav>
 

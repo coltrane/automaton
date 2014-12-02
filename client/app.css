@@ -1,3 +1,4 @@
+
 html, body{
     height: 100%;
     overflow:hidden;
@@ -7,28 +8,35 @@ body {
     background: rgba(100,100,100, 0.1);
 }
 
+
 #main-toolbar {
     border-bottom: 1px solid rgba(100,100,100,.5);
     box-shadow: 2px 2px 5px;
+    height: 87px;
+}
+#main-title {
+    margin-top: 10px;
+    font-size: 1.3em;
 }
 
+
 /**
- * Layout the container that will hold the AutomatonViewer.
- * Note that this container must be a fixed-height container
- * because it establishes a scrollable region for the atmn grid.
+ * #viewer is the the container that becomes the AutomatonViewer.
+ * This element must be a fixed-height container because it 
+ * is used to establish a scrollable region for the atmn grid's 
+ * content.
  */
 #viewer {
     overflow: auto;
     position: absolute;
-    top: 55px; bottom: 0;
+    top: 90px; bottom: 0;
     left: 0px; right: 0px;
 }
 
-#rule-num-display {
-    padding: 5px;
-    font-size: 1.3em;
-}
 
+/**
+ * The settings dialog
+ */
 #app-settings {
     position: absolute;
     top: 0; bottom: 0;
@@ -39,7 +47,6 @@ body {
 #app-settings.visible {
     display: block;
 }
-
 #app-settings > div {
 
     margin: 20px auto;
@@ -49,10 +56,13 @@ body {
     background: white;
     padding: 20px;
 }
-
 #app-settings > div form {
 }
 
+
+/**
+ * a panel that overlays the screen to prevent FOUC
+ */
 #app-loading {
     position: absolute;
     top: 0; bottom: 0;
@@ -60,20 +70,18 @@ body {
     background: white;
 }
 
-/* style the internal elements of the AutomatonViewer */
-.atmn-grid-scroll {
-}
+/**
+ * styles for the internal elements of AutomatonViewer 
+ */
 
-table.atmn-grid-content {
+.atmn-grid-content {
     border-collapse: separate;
     border-spacing: 1px;
 }
-
-.atmn-grid-content .atmn-grid-cell {
+.atmn-grid-cell {
     border: 1px solid lightgray;
     padding: 0px;
 }
-
-.atmn-grid-content .atmn-grid-cell.on {
+.atmn-grid-cell.on {
     background: black;
 }
