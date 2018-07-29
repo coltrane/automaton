@@ -13,7 +13,7 @@ are off the screen are kept in memory, but have no representation in the HTML
 DOM.  This keeps the total number of nodes down to a size that most browsers can
 handle well.
 
-[A live demo is available here](http://automaton.dev.projectmastermind.com/).
+[A live demo is available here](http://projectmastermind.com/p/automaton/).
 
 
 **Browser Support:**  
